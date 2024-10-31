@@ -1,0 +1,24 @@
+# ninja log v5
+10	948	7514063558908711	build.ninja	a7d38647c34e3cad
+4	932	7514060348108209	CMakeFiles/lab1sem3.dir/main.cpp.obj	a4aa0aaaa4c9cbad
+9	684	7505413849691238	CMakeFiles/lab1sem3.dir/tests/list_sequence_with_unique_ptr_tests.cpp.obj	86881d2039c99f23
+932	1254	7514060351301090	lab1sem3.exe	b1468f3d664b415d
+5	713	7486507765850858	CMakeFiles/lab1sem3.dir/phone.cpp.obj	9605e23647d51e5c
+21	800	7502777504359437	CMakeFiles/lab1sem3.dir/SharedPtr_tests.cpp.obj	477695577f44158
+27	810	7502777504399331	CMakeFiles/lab1sem3.dir/UniquePtr_tests.cpp.obj	3bf684629d8ec463
+14	828	7502777504699338	CMakeFiles/lab1sem3.dir/SmartPtr_tests.cpp.obj	27ba2bea35309c32
+32	741	7502805419275560	CMakeFiles/lab1sem3.dir/tests.cpp.obj	6ae0fd55776a4228
+11	785	7514060346617968	CMakeFiles/lab1sem3.dir/tests/array_sequence_with_shared_ptr_tests.cpp.obj	7039242ee3049715
+12	659	7505413849421978	CMakeFiles/lab1sem3.dir/tests/smart_array_with_smart_ptr_tests.cpp.obj	6cba4a89e193728a
+14	138	7514119959050482	CMakeFiles/lab1sem3.dir/tests/unique_ptr_tests.cpp.obj	583ebd4845b60842
+22	140	7514119959060459	CMakeFiles/lab1sem3.dir/tests/smart_ptr_tests.cpp.obj	1739fd96a0eb07c7
+26	685	7514119964475049	CMakeFiles/lab1sem3.dir/tests/shared_ptr_tests.cpp.obj	d541da73f2d5f36c
+7	761	7514119965319370	CMakeFiles/lab1sem3.dir/main.cpp.obj	a4aa0aaaa4c9cbad
+761	939	7514119967070525	lab1sem3.exe	e1d157bb6055baa3
+3	476	7514120502060792	CMakeFiles/lab1sem3.dir/tests/smart_array_with_smart_ptr_tests.cpp.obj	6cba4a89e193728a
+476	640	7514120503649109	lab1sem3.exe	e1d157bb6055baa3
+13	741	7514126656232268	CMakeFiles/lab1sem3.dir/tests/smart_array_with_smart_ptr_tests.cpp.obj	6cba4a89e193728a
+9	752	7514126656212326	CMakeFiles/lab1sem3.dir/tests/unique_ptr_tests.cpp.obj	583ebd4845b60842
+17	836	7514126657299402	CMakeFiles/lab1sem3.dir/tests/smart_ptr_tests.cpp.obj	1739fd96a0eb07c7
+4	1066	7514126659654157	CMakeFiles/lab1sem3.dir/main.cpp.obj	a4aa0aaaa4c9cbad
+1066	1221	7514126661186400	lab1sem3.exe	e1d157bb6055baa3

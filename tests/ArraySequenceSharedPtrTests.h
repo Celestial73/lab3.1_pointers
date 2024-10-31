@@ -1,0 +1,10 @@
+#pragma once
+void testInsertAtOutOfRange();
+void testInsertAt();
+void testAppend();
+void testGetLength();
+void testGetOutOfRange();
+void testGet();
+void testGetLast();
+void testGetFirst();
+void arraySequenceWithSharedPtrTest();

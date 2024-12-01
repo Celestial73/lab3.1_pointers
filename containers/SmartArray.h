@@ -22,11 +22,15 @@ namespace ds
         // Access an element of the array
         T &operator[](size_t index)
         {
+
+            if (index < 0 || index >= size)
+                throw std::invalid_argument("Index out of range when accessing smart array");
             return data.get()[index];
         }
 
         // Get the size of the array
-        size_t getSize() const
+        size_t
+        getSize() const
         {
             return size;
         }
@@ -49,7 +53,7 @@ namespace ds
         {
             for (size_t i = 0; i < size; ++i)
             {
-                std::cout << data.get()[i] << " ";
+                std::cout << (data.get())[i] << " ";
             }
             std::cout << std::endl;
         }

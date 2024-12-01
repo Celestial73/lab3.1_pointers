@@ -1,5 +1,7 @@
 #pragma once
 #include <iostream>
+#include <utility>
+#include "../pointers/UniquePtr.h"
 
 namespace ds
 {
@@ -7,25 +9,22 @@ namespace ds
     class DynamicArray
     {
     private:
-        T *elements = nullptr;
+        UniquePtr<T[]> elements;
         int size;
 
     public:
         // Constructs the array with elements from an existing array of items
         DynamicArray(T *items, int itemCount)
         {
-            this->elements = new T[itemCount];
+            this->elements = UniquePtr<T[]>(new T[itemCount]);
             this->size = itemCount;
-            for (int i = 0; i < itemCount; i++)
-            {
-                this->elements[i] = items[i];
-            }
+            std::copy(items, items + itemCount, elements.get());
         }
 
         // Default constructor creates an empty array
         DynamicArray()
         {
-            this->elements = nullptr;
+            this->elements = UniquePtr<T[]>();
             this->size = 0;
         }
 
@@ -33,17 +32,17 @@ namespace ds
         DynamicArray(int newSize)
         {
             this->size = newSize;
-            this->elements = new T[newSize];
+            this->elements = UniquePtr(new T[newSize]);
         }
 
         // Copy constructor for creating a copy of another DynamicArray
         DynamicArray(DynamicArray<T> &otherArray)
         {
             this->size = otherArray.size;
-            this->elements = new T[this->size];
+            this->elements = UniquePtr(new T[this->size]);
             for (int i = 0; i < this->size; i++)
             {
-                this->elements[i] = otherArray.elements[i];
+                *(this->elements.get(i)) = *(otherArray.elements.get(i));
             }
         }
 
@@ -68,7 +67,7 @@ namespace ds
             {
                 throw std::out_of_range("index");
             }
-            this->elements[index] = value;
+            elements[index] = value;
         }
 
         // Resizes the array to a new size
@@ -76,15 +75,18 @@ namespace ds
         {
             if (newSize < 0)
             {
-                throw std::out_of_range("newSize");
+                throw std::out_of_range("wrong newSize input");
             }
             if (newSize == 0)
             {
                 this->size = 0;
-                this->elements = nullptr;
+                this->elements = UniquePtr<T[]>();
                 return;
             }
-            this->elements = (T *)realloc(this->elements, newSize * sizeof(T));
+            UniquePtr<T[]> newData(new T[newSize]);
+            int elemSize = std::min(size, newSize);
+            std::copy(elements.get(), elements.get() + elemSize, newData.get());
+            elements = std::move(newData);
             this->size = newSize;
         }
     };

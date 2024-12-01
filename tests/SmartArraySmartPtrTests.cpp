@@ -9,7 +9,7 @@ void testInitialization()
     SmartArray<int> arr(5);
 
     // Initialize the array with values
-    for (size_t i = 0; i < arr.getSize(); ++i)
+    for (size_t i = 0; i < arr.getSize(); i++)
     {
         arr[i] = static_cast<int>(i + 1); // Fill the array with 1, 2, 3, 4, 5
     }

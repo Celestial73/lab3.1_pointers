@@ -22,8 +22,6 @@ public:
         {
             release();
             ptr = other.ptr;
-            if (ptr == nullptr)
-                return *this;
             ref_count = other.ref_count;
             ++(*ref_count);
         }
@@ -54,15 +52,8 @@ public:
         release();
     }
 
-    T &operator*()
+    T &operator*() const
     {
-        checkIsEmpty();
-        return *ptr;
-    }
-
-    const T &operator*() const
-    {
-        checkIsEmpty();
         return *ptr;
     }
 
@@ -70,7 +61,6 @@ public:
     {
         return ptr;
     }
-
     const T *operator->() const
     {
         return ptr;
@@ -80,7 +70,6 @@ public:
     {
         return ptr;
     }
-
     T *get()
     {
         return ptr;
@@ -116,7 +105,6 @@ private:
         ptr = nullptr;
         ref_count = nullptr;
     }
-
     void checkIsEmpty()
     {
         if (ptr == nullptr)

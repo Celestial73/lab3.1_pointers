@@ -1,43 +1,42 @@
 #pragma once
 #include <iostream>
+#include "../pointers/SharedPtr.h"
 #include "../pointers/UniquePtr.h"
 
 template <class T>
 struct Node
 {
     T item;
-    Node *next;
+    SharedPtr<Node<T>> next;
 };
 
 template <class T>
 class LinkedList
 {
 private:
-    Node<T> *head;
-    Node<T> *tail;
+    SharedPtr<Node<T>> head;
+    SharedPtr<Node<T>> tail;
     int listSize;
 
 public:
     // Constructor with array of items
-    LinkedList(T *items, int count)
+    LinkedList(T *items, int count) : head(nullptr), tail(nullptr)
     {
-        this->head = nullptr;
-        this->tail = nullptr;
         int itemsIndex = 0;
 
         for (int i = 0; i < count; ++i)
         {
-            Node<T> *newNode = new Node<T>();
+            SharedPtr<Node<T>> newNode = SharedPtr<Node<T>>(new Node<T>());
             newNode->item = items[itemsIndex++];
-            newNode->next = nullptr;
+            newNode->next = SharedPtr<Node<T>>();
 
-            if (this->head == nullptr)
+            if (this->head.get() == nullptr)
             {
-                this->head = newNode; // Set first element of the list
+                this->head = SharedPtr(newNode); // Set first element of the list
             }
             else
             {
-                this->tail->next = newNode; // Link new node to the last element
+                this->tail->next = SharedPtr(newNode); // Link new node to the last element
             }
 
             this->tail = newNode; // Update tail pointer
@@ -49,8 +48,8 @@ public:
     // Default constructor
     LinkedList()
     {
-        this->head = nullptr;
-        this->tail = nullptr;
+        this->head = SharedPtr<Node<T>>();
+        this->tail = SharedPtr<Node<T>>();
         this->listSize = 0;
     }
 
@@ -67,7 +66,7 @@ public:
     // Get the first element
     T getFirst()
     {
-        if (this->head == nullptr)
+        if (this->head.get() == nullptr)
         {
             throw std::out_of_range("Empty list.");
         }
@@ -80,7 +79,7 @@ public:
     // Get the last element
     T getLast()
     {
-        if (this->head == nullptr)
+        if (this->head.get() == nullptr)
         {
             throw std::out_of_range("Empty list.");
         }
@@ -98,10 +97,10 @@ public:
             throw std::out_of_range("Invalid index.");
         }
 
-        Node<T> *currentNode = this->head;
+        Node<T> *currentNode = this->head.get();
         for (int i = 0; i < index; ++i)
         {
-            currentNode = currentNode->next;
+            currentNode = currentNode->next.get();
         }
 
         return currentNode->item;
@@ -116,7 +115,7 @@ public:
         }
 
         LinkedList<T> *subList = new LinkedList<T>();
-        Node<T> *current = head;
+        Node<T> *current = head.get();
         int index = 0;
 
         while (current != nullptr)
@@ -125,7 +124,7 @@ public:
             {
                 subList->append(current->item);
             }
-            current = current->next;
+            current = current->next.get();
             index++;
         }
         return subList;
@@ -140,29 +139,34 @@ public:
     // Append an item to the end of the list
     void append(T item)
     {
-        Node<T> *newNode = new Node<T>();
+        SharedPtr<Node<T>> newNode = SharedPtr<Node<T>>(new Node<T>());
         newNode->item = item;
-        newNode->next = nullptr;
+        newNode->next = SharedPtr<Node<T>>();
 
         if (listSize == 0)
         {
-            head = newNode;
+            head = newNode; // Move newNode to head
         }
         else
         {
-            tail->next = newNode;
+            tail->next = newNode; // Move newNode to tail's next
         }
-        tail = newNode;
+        tail = newNode; // Move newNode to tail
         listSize++;
     }
 
     // Prepend an item to the beginning of the list
     void prepend(T item)
     {
-        Node<T> *newNode = new Node<T>();
+        SharedPtr<Node<T>> newNode = SharedPtr<Node<T>>(new Node<T>());
         newNode->item = item;
-        newNode->next = this->head;
-        this->head = newNode;
+        newNode->next = this->head; // Move current head to newNode's next
+        this->head = newNode;       // Move newNode to head
+
+        // if (listSize == 0)
+        // {
+        //     tail = head.get(); // Only update tail if list was empty
+        // }
         listSize++;
     }
 
@@ -173,27 +177,29 @@ public:
         {
             throw std::out_of_range("Invalid index.");
         }
-
-        Node<T> *newNode = new Node<T>();
+        SharedPtr<Node<T>> newNode = SharedPtr<Node<T>>(new Node<T>());
         newNode->item = item;
 
         if (index == 0)
         {
-            newNode->next = this->head;
-            this->head = newNode;
+            newNode->next = this->head; // Move head to newNode's next
+            this->head = newNode;       // Move newNode to head
         }
         else
         {
-            Node<T> *prevNode = nullptr;
-            Node<T> *currentNode = this->head;
-            for (int i = 0; i < index; ++i)
+            Node<T> *currentNode = this->head.get();
+            for (int i = 0; i < index - 1; ++i)
             {
-                prevNode = currentNode;
-                currentNode = currentNode->next;
+                currentNode = currentNode->next.get();
             }
 
-            prevNode->next = newNode;
-            newNode->next = currentNode;
+            newNode->next = currentNode->next; // Move current node's next to newNode's next
+            currentNode->next = newNode;       // Move newNode to current node's next
+
+            // if (index == listSize)
+            // {
+            //     tail = currentNode->next.get(); // Update tail if new node is added at the end
+            // }
         }
 
         listSize++;
@@ -204,9 +210,16 @@ public:
     {
         LinkedList<T> *newList = new LinkedList<T>();
         newList->listSize = this->listSize + list->listSize;
+
+        // Move the current list's head to newList's head
         newList->head = this->head;
+
+        // Link the current list's tail to the other list's head by moving ownership
         this->tail->next = list->head;
+
+        // Move the other list's tail to newList's tail
         newList->tail = list->tail;
+
         return newList;
     }
 };

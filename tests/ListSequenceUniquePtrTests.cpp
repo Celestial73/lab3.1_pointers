@@ -108,7 +108,7 @@ void testListConcat()
     ListSequence<int> sequence1(items1, 3); // Sequence 1: {1, 2, 3}
     ListSequence<int> sequence2(items2, 3); // Sequence 2: {4, 5, 6}
 
-    ListSequence<int> *concatenatedSequence = dynamic_cast<ListSequence<int> *>(sequence1.concat(&sequence2));
+    UniquePtr<ListSequence<int>> concatenatedSequence = sequence1.concat(&sequence2);
 
     assert(concatenatedSequence->getLength() == 6); // Verify combined length is 6
 
@@ -120,8 +120,6 @@ void testListConcat()
     assert(concatenatedSequence->get(5) == 6);
 
     std::cout << "testListConcat PASSED" << std::endl;
-
-    delete concatenatedSequence; // Free memory for concatenated result
 }
 
 // Run all tests for ListSequence

@@ -1,12 +1,4 @@
 #include "menu.h"
-#include "tests/ArraySequenceSharedPtrTests.h"
-#include "tests/SmartArraySmartPtrTests.h"
-#include "tests/ListSequenceUniquePtrTests.h"
-#include "tests/SharedPtrTests.h"
-#include "tests/SmartPtrTests.h"
-#include "tests/UniquePtrTests.h"
-
-#include <iostream>
 
 void print_menu()
 {

@@ -35,12 +35,22 @@ public:
         return *this;
     }
 
-    T &operator*() const
+    T &operator*()
     {
         return *ptr;
     }
 
-    T *operator->() const
+    const T &operator*() const
+    {
+        return *ptr;
+    }
+
+    T *operator->()
+    {
+        return ptr;
+    }
+
+    const T *operator->() const
     {
         return ptr;
     }
@@ -61,5 +71,12 @@ public:
     {
         delete ptr;
         ptr = newPtr;
+    }
+
+private:
+    void checkIsEmpty()
+    {
+        if (ptr == nullptr)
+            throw std::out_of_range("Accessing empty SmartPointer.");
     }
 };

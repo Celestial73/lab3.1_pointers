@@ -2,24 +2,6 @@
 template <typename T>
 class SharedPtr
 {
-private:
-    T *ptr;
-    int *ref_count;
-
-    void release()
-    {
-        if (ref_count)
-        {
-            --(*ref_count);
-            if (*ref_count == 0)
-            {
-                delete ptr;
-                delete ref_count;
-                ptr = nullptr;
-                ref_count = nullptr;
-            }
-        }
-    }
 
 public:
     SharedPtr() : ptr(nullptr), ref_count(nullptr) {}
@@ -40,6 +22,9 @@ public:
         {
             release();
             ptr = other.ptr;
+            if (ptr == nullptr)
+                return *this; // if the other pointer is nullptr,
+                              // make this one null and keep the ref_count nullptr
             ref_count = other.ref_count;
             if (ref_count)
             {
@@ -59,12 +44,24 @@ public:
         return ref_count ? *ref_count : 0;
     }
 
-    T &operator*() const
+    T &operator*()
     {
+        checkIsEmpty();
         return *ptr;
     }
 
-    T *operator->() const
+    const T &operator*() const
+    {
+        checkIsEmpty();
+        return *ptr;
+    }
+
+    const T *operator->() const
+    {
+        return ptr;
+    }
+
+    T *operator->()
     {
         return ptr;
     }
@@ -87,5 +84,30 @@ public:
             ptr = nullptr;
             ref_count = nullptr;
         }
+    }
+
+private:
+    T *ptr;
+    int *ref_count;
+
+    void release()
+    {
+        if (ref_count)
+        {
+            --(*ref_count);
+            if (*ref_count <= 0)
+            {
+                delete ptr;
+                delete ref_count;
+                ptr = nullptr;
+                ref_count = nullptr;
+            }
+        }
+    }
+
+    void checkIsEmpty()
+    {
+        if (ptr == nullptr)
+            throw std::out_of_range("Accessing empty SmartPointer.");
     }
 };

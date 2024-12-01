@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include "../pointers/UniquePtr.h"
 
 template <class T>
 struct Node

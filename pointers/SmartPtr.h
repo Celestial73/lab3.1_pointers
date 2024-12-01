@@ -22,6 +22,8 @@ public:
         {
             release();
             ptr = other.ptr;
+            if (ptr == nullptr)
+                return *this;
             ref_count = other.ref_count;
             ++(*ref_count);
         }
@@ -52,17 +54,34 @@ public:
         release();
     }
 
-    T &operator*() const
+    T &operator*()
     {
+        checkIsEmpty();
         return *ptr;
     }
 
-    T *operator->() const
+    const T &operator*() const
+    {
+        checkIsEmpty();
+        return *ptr;
+    }
+
+    T *operator->()
     {
         return ptr;
     }
 
-    T *get() const
+    const T *operator->() const
+    {
+        return ptr;
+    }
+
+    const T *get() const
+    {
+        return ptr;
+    }
+
+    T *get()
     {
         return ptr;
     }
@@ -88,7 +107,7 @@ private:
         if (ref_count)
         {
             --(*ref_count);
-            if (*ref_count == 0)
+            if (*ref_count <= 0)
             {
                 delete ptr;
                 delete ref_count;
@@ -96,5 +115,11 @@ private:
         }
         ptr = nullptr;
         ref_count = nullptr;
+    }
+
+    void checkIsEmpty()
+    {
+        if (ptr == nullptr)
+            throw std::out_of_range("Accessing empty SmartPointer.");
     }
 };

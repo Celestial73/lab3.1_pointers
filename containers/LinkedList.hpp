@@ -23,23 +23,10 @@ public:
     LinkedList(T *items, int count) : head(nullptr), tail(nullptr)
     {
         int itemsIndex = 0;
-
+        this->listSize = 0;
         for (int i = 0; i < count; ++i)
         {
-            SharedPtr<Node<T>> newNode = SharedPtr<Node<T>>(new Node<T>());
-            newNode->item = items[itemsIndex++];
-            newNode->next = SharedPtr<Node<T>>();
-
-            if (this->head.get() == nullptr)
-            {
-                this->head = SharedPtr(newNode); // Set first element of the list
-            }
-            else
-            {
-                this->tail->next = SharedPtr(newNode); // Link new node to the last element
-            }
-
-            this->tail = newNode; // Update tail pointer
+            append(items[itemsIndex++]);
         }
 
         this->listSize = count;
@@ -54,13 +41,16 @@ public:
     }
 
     // Copy constructor
-    LinkedList(const LinkedList<T> &list)
+    LinkedList(const LinkedList<T> &other)
     {
+        this->listSize = other.listSize;
+        SharedPtr<Node<T>> otherTraverseNode = other.head;
+
         for (int i = 0; i < list.getLength(); i++)
         {
-            append(list.get(i));
+            append(otherTraverseNode->item);
+            otherTraverseNode = otherTraverseNode->next;
         }
-        this->listSize = list.listSize;
     }
 
     // Get the first element
@@ -163,10 +153,10 @@ public:
         newNode->next = this->head; // Move current head to newNode's next
         this->head = newNode;       // Move newNode to head
 
-        // if (listSize == 0)
-        // {
-        //     tail = head.get(); // Only update tail if list was empty
-        // }
+        if (listSize == 0)
+        {
+            tail = head.get(); // Only update tail if list was empty
+        }
         listSize++;
     }
 
@@ -196,30 +186,61 @@ public:
             newNode->next = currentNode->next; // Move current node's next to newNode's next
             currentNode->next = newNode;       // Move newNode to current node's next
 
-            // if (index == listSize)
-            // {
-            //     tail = currentNode->next.get(); // Update tail if new node is added at the end
-            // }
+            if (index == listSize)
+            {
+                tail = currentNode->next; // Update tail if new node is added at the end
+            }
         }
 
         listSize++;
     }
 
+    void set(int index, T value)
+    {
+        if (index < 0 || index >= listSize)
+        {
+            throw std::invalid_argument("Error: Index out of range");
+        }
+
+        SharedPtr<Node<T>> current = head;
+        for (int i = 0; i < index; i++)
+        {
+            current = current->next;
+        }
+
+        current->item = value;
+    }
+
     // Concatenate two linked lists
-    LinkedList<T> *concat(LinkedList<T> *list)
+    UniquePtr<LinkedList<T>> concat(LinkedList<T> *other)
     {
         LinkedList<T> *newList = new LinkedList<T>();
-        newList->listSize = this->listSize + list->listSize;
+        newList->listSize = this->listSize + other->listSize;
 
-        // Move the current list's head to newList's head
-        newList->head = this->head;
+        SharedPtr<Node<T>> transferNode1 = this->head;
 
-        // Link the current list's tail to the other list's head by moving ownership
-        this->tail->next = list->head;
+        newList->head = SharedPtr<Node<T>>(new Node<T>());
+        newList->head->item = this->head->item;
+        SharedPtr<Node<T>> newListTransferNode = newList->head;
 
-        // Move the other list's tail to newList's tail
-        newList->tail = list->tail;
+        for (int i = 0; i < listSize - 1; i++)
+        {
+            transferNode1 = transferNode1->next;
+            newListTransferNode->next = SharedPtr<Node<T>>(new Node<T>());
+            newListTransferNode->next->item = transferNode1->item;
+            newListTransferNode = newListTransferNode->next;
+        }
 
-        return newList;
+        SharedPtr<Node<T>> transferNode2 = other->head;
+        for (int i = 0; i < other->listSize; i++)
+        {
+            newListTransferNode->next = SharedPtr<Node<T>>(new Node<T>());
+            newListTransferNode->next->item = transferNode2->item;
+            newListTransferNode = newListTransferNode->next;
+            transferNode2 = transferNode2->next;
+        }
+        newList->tail = newListTransferNode;
+
+        return UniquePtr(newList);
     }
 };

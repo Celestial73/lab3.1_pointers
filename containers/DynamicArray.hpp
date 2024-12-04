@@ -16,6 +16,7 @@ namespace ds
         // Constructs the array with elements from an existing array of items
         DynamicArray(T *items, int itemCount)
         {
+            checkNewSize(itemCount);
             this->elements = UniquePtr<T[]>(new T[itemCount]);
             this->size = itemCount;
             std::copy(items, items + itemCount, elements.get());
@@ -31,8 +32,9 @@ namespace ds
         // Constructs an array with a specified size
         DynamicArray(int newSize)
         {
+            checkNewSize(newSize);
             this->size = newSize;
-            this->elements = UniquePtr(new T[newSize]);
+            this->elements = UniquePtr<T[]>(new T[newSize]);
         }
 
         // Copy constructor for creating a copy of another DynamicArray
@@ -47,7 +49,7 @@ namespace ds
         }
 
         // Returns the element at the specified index
-        T get(int index)
+        T get(int index) const
         {
             if (index < 0 || index >= size)
                 throw std::out_of_range("index");
@@ -55,7 +57,7 @@ namespace ds
         }
 
         // Returns the size of the array
-        int getSize()
+        int getSize() const
         {
             return this->size;
         }
@@ -89,5 +91,15 @@ namespace ds
             elements = std::move(newData);
             this->size = newSize;
         }
+
+    private:
+        void checkNewSize(int size)
+        {
+            if (size < 1)
+            {
+                throw std::invalid_argument("Invalid array size");
+            }
+        }
     };
+
 }

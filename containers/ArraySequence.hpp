@@ -53,8 +53,13 @@ namespace ds
             return this->dataArray->get(index);
         }
 
+        void set(int index, T value) override
+        {
+            dataArray->set(index, value);
+        }
+
         // Returns a subsequence from startIndex to endIndex
-        ArraySequence<T> *getSubsequence(int startIndex, int endIndex)
+        UniquePtr<Sequence<T>> getSubsequence(int startIndex, int endIndex)
         {
             if (this->dataArray->getSize() <= 0 || startIndex < 0 || startIndex >= this->dataArray->getSize() ||
                 endIndex < 0 || endIndex >= this->dataArray->getSize() || endIndex <= startIndex)
@@ -70,7 +75,7 @@ namespace ds
                     T element = this->dataArray->get(i);
                     subsequence->dataArray->set(subIndex++, element);
                 }
-                return subsequence;
+                return UniquePtr<Sequence<T>>(subsequence);
             }
         }
 
@@ -112,21 +117,21 @@ namespace ds
         }
 
         // Concatenates this sequence with another ArraySequence
-        Sequence<T> *concat(ArraySequence<T> *list)
+        UniquePtr<Sequence<T>> concat(Sequence<T> *sequence)
         {
-            auto concatenatedSequence = new ArraySequence<T>(this->dataArray->getSize() + list->dataArray->getSize());
+            auto concatenatedSequence = new ArraySequence<T>(this->dataArray->getSize() + sequence->getLength());
             int concatIndex = 0;
 
             for (int i = 0; i < this->dataArray->getSize(); ++i)
             {
                 concatenatedSequence->dataArray->set(concatIndex++, this->dataArray->get(i));
             }
-            for (int i = 0; i < list->dataArray->getSize(); ++i)
+            for (int i = 0; i < sequence->getLength(); ++i)
             {
-                concatenatedSequence->dataArray->set(concatIndex++, list->dataArray->get(i));
+                concatenatedSequence->set(concatIndex++, sequence->get(i));
             }
 
-            return concatenatedSequence;
+            return UniquePtr<Sequence<T>>(concatenatedSequence);
         }
 
         // Prints all elements in the sequence

@@ -132,6 +132,23 @@ void testDereferenceOperatorSharedPtr()
     }
 }
 
+void testCounterVulnerability()
+{
+    SharedPtr<int> emptyPtr;
+    SharedPtr<int> normalPtr(new int(19));
+    SharedPtr<int> normalPtrCopy(normalPtr);
+    normalPtrCopy = emptyPtr;
+    SharedPtr<int> emptyCopy1(normalPtrCopy);
+    SharedPtr<int> emptyCopy2(normalPtrCopy);
+    SharedPtr<int> emptyCopy3(normalPtrCopy);
+
+    SharedPtr<int> normalPtrCopy1(normalPtr);
+    SharedPtr<int> normalPtrCopy2(normalPtr);
+    SharedPtr<int> normalPtrCopy3(normalPtr);
+    SharedPtr<int> normalPtrCopy4(normalPtr);
+    std::cout << "Counter vulnerability shown\n";
+}
+
 void runSharedPtrTests()
 {
     testDefaultConstructorSharedPtr();
@@ -142,4 +159,5 @@ void runSharedPtrTests()
     testCopyAssignmentSharedPtr();
     testCopyConstructorSharedPtr();
     testDereferenceOperatorSharedPtr();
+    testCounterVulnerability();
 }

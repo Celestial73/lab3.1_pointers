@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cassert>
 #include "../containers/listsequence.hpp" // Include ListSequence class
+#include "../containers/LinkedList.hpp"   // Include ListSequence class
 using namespace ds;
 // Test getFirst method for ListSequence
 void testListGetFirst()
@@ -108,7 +109,7 @@ void testListConcat()
     ListSequence<int> sequence1(items1, 3); // Sequence 1: {1, 2, 3}
     ListSequence<int> sequence2(items2, 3); // Sequence 2: {4, 5, 6}
 
-    UniquePtr<ListSequence<int>> concatenatedSequence = sequence1.concat(&sequence2);
+    UniquePtr<Sequence<int>> concatenatedSequence = sequence1.concat(&sequence2);
 
     assert(concatenatedSequence->getLength() == 6); // Verify combined length is 6
 
@@ -120,6 +121,28 @@ void testListConcat()
     assert(concatenatedSequence->get(5) == 6);
 
     std::cout << "testListConcat PASSED" << std::endl;
+}
+
+void testLinkedListStructureConcat()
+{
+    int items1[] = {1, 2, 3};
+    int items2[] = {4, 5, 6};
+
+    LinkedList<int> list1(items1, 3); // Sequence 1: {1, 2, 3}
+    LinkedList<int> list2(items2, 3); // Sequence 2: {4, 5, 6}
+
+    UniquePtr<LinkedList<int>> concatenatedSequence = list1.concat(&list2);
+
+    assert(concatenatedSequence->getLength() == 6); // Verify combined length is 6
+
+    assert(concatenatedSequence->get(0) == 1);
+    assert(concatenatedSequence->get(1) == 2);
+    assert(concatenatedSequence->get(2) == 3);
+    assert(concatenatedSequence->get(3) == 4);
+    assert(concatenatedSequence->get(4) == 5);
+    assert(concatenatedSequence->get(5) == 6);
+
+    std::cout << "TestListStructureConcat PASSED" << std::endl;
 }
 
 // Run all tests for ListSequence
@@ -134,4 +157,5 @@ void listSequenceWithUniquePtrTests()
     testListGetOutOfRange();
     testListInsertAtOutOfRange();
     testListConcat();
+    testLinkedListStructureConcat();
 }

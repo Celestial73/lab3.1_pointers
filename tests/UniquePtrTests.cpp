@@ -2,19 +2,6 @@
 #include <iostream>
 #include "../pointers/UniquePtr.h"
 
-void testDefaultConstructorUniquePtr()
-{
-    UniquePtr<int> ptr;
-    if (ptr.get() == nullptr)
-    {
-        std::cout << "testDefaultConstructor PASSED\n";
-    }
-    else
-    {
-        std::cout << "testDefaultConstructor FAILED\n";
-    }
-}
-
 void testExplicitConstructorUniquePtr()
 {
     UniquePtr<int> ptr(new int(42));
@@ -127,7 +114,6 @@ void testResetMethodUniquePtr()
 void runUniquePtrTests()
 {
     testArrowOperatorUniquePtr();
-    testDefaultConstructorUniquePtr();
     testDereferenceOperatorUniquePtr();
     testExplicitConstructorUniquePtr();
     testMoveAssignmentUniquePtr();

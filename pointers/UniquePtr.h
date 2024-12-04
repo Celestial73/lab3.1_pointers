@@ -37,21 +37,25 @@ public:
 
     T &operator*()
     {
+        checkIsEmpty();
         return *ptr;
     }
 
     const T &operator*() const
     {
+        checkIsEmpty();
         return *ptr;
     }
 
     T *operator->()
     {
+        checkIsEmpty();
         return ptr;
     }
 
     const T *operator->() const
     {
+        checkIsEmpty();
         return ptr;
     }
 
@@ -79,7 +83,7 @@ public:
     }
 
 private:
-    void checkIsEmpty()
+    void checkIsEmpty() const
     {
         if (ptr == nullptr)
             throw std::out_of_range("Accessing empty SmartPointer.");
@@ -121,7 +125,7 @@ public:
         return *this;
     }
 
-    T &operator[](std::size_t index)
+    T &operator[](std::size_t index) const
     {
         if (!ptr)
             throw std::runtime_error("Empty pointer");
@@ -173,7 +177,7 @@ public:
     }
 
 private:
-    void checkIsEmpty()
+    void checkIsEmpty() const
     {
         if (ptr == nullptr)
             throw std::out_of_range("Accessing empty SmartPointer.");

@@ -5,7 +5,7 @@
 void testDefaultConstructorSmartPtr()
 {
     SmartPtr<int> ptr;
-    if (ptr.get() == nullptr && ptr.num_count() == 0)
+    if (ptr.get() == nullptr)
     {
         std::cout << "testDefaultConstructor PASSED\n";
     }

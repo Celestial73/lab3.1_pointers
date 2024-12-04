@@ -58,13 +58,22 @@ namespace ds
             return this->listData->get(index);
         }
 
+        void set(int index, T value)
+        {
+            if (index < 0 || index >= listData->getLength())
+            {
+                throw std::out_of_range("Index out of range");
+            }
+            listData->set(index, value);
+        }
+
         // Get a subsequence as a new ListSequence
-        UniquePtr<ListSequence<T>> getSubsequence(int startIndex, int endIndex)
+        UniquePtr<Sequence<T>> getSubsequence(int startIndex, int endIndex)
         {
             UniquePtr<LinkedList<T>> sublist = UniquePtr<LinkedList<T>>(this->listData->getSubList(startIndex, endIndex));
-            UniquePtr<ListSequence<T>> newSequence = new UniquePtr(new ListSequence<T>());
+            ListSequence<T> *newSequence = new ListSequence<T>();
             newSequence->listData = std::move(sublist); // Transfer ownership of pointer
-            return newSequence;
+            return UniquePtr<Sequence<T>>(newSequence);
         }
 
         // Get the length of the sequence
@@ -92,14 +101,17 @@ namespace ds
         }
 
         // Concatenate two sequences
-        UniquePtr<ListSequence<T>> concat(ListSequence<T> *list)
+        UniquePtr<Sequence<T>> concat(Sequence<T> *other)
         {
-            LinkedList<T> *combinedList = this->listData->concat(list->listData.get()); // Access raw pointer with get()
-
-            UniquePtr<LinkedList<T>> uniqueCombinedList(combinedList);
-
-            UniquePtr<ListSequence<T>> result = UniquePtr(new ListSequence<T>());
-            result->listData = std::move(uniqueCombinedList); // Transfer ownership
+            UniquePtr<Sequence<T>> result(new ListSequence<T>());
+            for (int i = 0; i < getLength(); ++i)
+            {
+                result->append(get(i));
+            }
+            for (int i = 0; i < other->getLength(); ++i)
+            {
+                result->append(other->get(i));
+            }
             return result;
         }
 

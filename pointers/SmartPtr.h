@@ -7,14 +7,17 @@ private:
     int *ref_count;
 
 public:
-    SmartPtr() : ptr(nullptr), ref_count(new int(0)) {}
+    SmartPtr() : ptr(nullptr), ref_count(nullptr) {}
 
     explicit SmartPtr(T *p) : ptr(p), ref_count(new int(1)) {}
 
     SmartPtr(const SmartPtr &other) : ptr(other.ptr), ref_count(other.ref_count)
     {
-        ++(*ref_count);
-    }
+        if (ref_count)
+        {
+            ++(*ref_count);
+        }
+        }
 
     SmartPtr &operator=(const SmartPtr &other)
     {
@@ -52,17 +55,26 @@ public:
         release();
     }
 
-    T &operator*() const
+    T &operator*()
     {
+        checkIsEmpty();
+        return *ptr;
+    }
+
+    const T &operator*() const
+    {
+        checkIsEmpty();
         return *ptr;
     }
 
     T *operator->()
     {
+        checkIsEmpty();
         return ptr;
     }
     const T *operator->() const
     {
+        checkIsEmpty();
         return ptr;
     }
 
@@ -105,7 +117,7 @@ private:
         ptr = nullptr;
         ref_count = nullptr;
     }
-    void checkIsEmpty()
+    void checkIsEmpty() const
     {
         if (ptr == nullptr)
             throw std::out_of_range("Accessing empty SmartPointer.");
